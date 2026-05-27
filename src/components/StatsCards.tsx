@@ -4,11 +4,10 @@
 
 import React from 'react';
 import type { BattingStats } from '../types';
-import { formatAvg, formatRate } from '../stats';
+import { formatRate } from '../stats';
 import StatGauge from './StatGauge';
 import {
-  Target, Crosshair, TrendingUp, Zap,
-  Award, Hash, CircleDot
+  TrendingUp, Zap, CircleDot
 } from 'lucide-react';
 
 interface StatsCardsProps {

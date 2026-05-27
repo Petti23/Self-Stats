@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import { Trash2, Edit3, ChevronDown, ChevronUp } from 'lucide-react';
-import type { Game, PlateAppearance, OutcomeType } from '../types';
+import type { Game, PlateAppearance } from '../types';
 import { OUTCOMES } from '../types';
 import { isHit } from '../stats';
 import * as store from '../store';
