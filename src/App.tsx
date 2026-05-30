@@ -163,7 +163,7 @@ const App: React.FC = () => {
                 <ChevronDown className={`w-4 h-4 text-text-muted transition-transform ${showTournamentPicker ? 'rotate-180' : ''}`} />
               </button>
               {showTournamentPicker && (
-                <div className="absolute top-full left-0 right-0 mt-1 glass-card p-2 z-20 animate-slide-down">
+                <div className="absolute top-full left-0 right-0 mt-1 bg-bg-secondary border border-border-glass rounded-2xl shadow-glass p-2 z-20 animate-slide-down">
                   <button
                     onClick={() => { setActiveTournamentId(null); setShowTournamentPicker(false); }}
                     className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${!activeTournamentId ? 'bg-emerald-600/20 text-emerald-400' : 'text-text-secondary hover:bg-white/5'}`}
