@@ -20,7 +20,7 @@ const ManageGames: React.FC<ManageGamesProps> = ({ isOpen, onClose, tournament, 
   const [notes, setNotes] = useState('');
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
-  useEffect(() => { if (isOpen) { setShowForm(false); setEditId(null); setConfirmDelete(null); } }, [isOpen]);
+  useEffect(() => { if (isOpen) { setShowForm(games.length === 0); setEditId(null); setConfirmDelete(null); } }, [isOpen, games.length]);
 
   if (!isOpen || !tournament) return null;
 

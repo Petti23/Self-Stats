@@ -14,7 +14,8 @@ export type OutcomeType =
   | 'HBP'
   | 'SF'
   | 'SAC'
-  | 'CI';
+  | 'CI'
+  | 'ROE';
 
 /** A tournament / season / league */
 export interface Tournament {
@@ -60,6 +61,7 @@ export interface BattingStats {
   sac: number;  // Sacrifice Bunts
   ci: number;   // Catcher Interference
   outs: number; // Defensive outs (groundout/flyout)
+  roe: number;  // Reach on Error
   rbi: number;  // Runs Batted In
   runs: number; // Runs Scored
   tb: number;   // Total Bases
@@ -89,15 +91,16 @@ export interface OutcomeInfo {
 
 /** All outcome info map */
 export const OUTCOMES: Record<OutcomeType, OutcomeInfo> = {
-  '1B':  { code: '1B',  label: 'Sencillo',          isHit: true,  isAtBat: true,  colorClass: 'bg-emerald-500' },
-  '2B':  { code: '2B',  label: 'Doble',             isHit: true,  isAtBat: true,  colorClass: 'bg-emerald-400' },
-  '3B':  { code: '3B',  label: 'Triple',            isHit: true,  isAtBat: true,  colorClass: 'bg-teal-400' },
-  'HR':  { code: 'HR',  label: 'Home Run',          isHit: true,  isAtBat: true,  colorClass: 'bg-amber-500' },
-  'OUT': { code: 'OUT', label: 'Out',               isHit: false, isAtBat: true,  colorClass: 'bg-slate-500' },
-  'K':   { code: 'K',   label: 'Ponche',            isHit: false, isAtBat: true,  colorClass: 'bg-rose-500' },
-  'BB':  { code: 'BB',  label: 'Base por Bolas',    isHit: false, isAtBat: false, colorClass: 'bg-blue-500' },
-  'HBP': { code: 'HBP', label: 'Golpeado',          isHit: false, isAtBat: false, colorClass: 'bg-orange-500' },
-  'SF':  { code: 'SF',  label: 'Fly Sacrificio',    isHit: false, isAtBat: false, colorClass: 'bg-indigo-500' },
-  'SAC': { code: 'SAC', label: 'Toque Sacrificio',  isHit: false, isAtBat: false, colorClass: 'bg-violet-500' },
-  'CI':  { code: 'CI',  label: 'Interferencia',     isHit: false, isAtBat: false, colorClass: 'bg-gray-500' },
+  '1B': { code: '1B', label: 'Sencillo', isHit: true, isAtBat: true, colorClass: 'bg-emerald-500' },
+  '2B': { code: '2B', label: 'Doble', isHit: true, isAtBat: true, colorClass: 'bg-emerald-400' },
+  '3B': { code: '3B', label: 'Triple', isHit: true, isAtBat: true, colorClass: 'bg-teal-400' },
+  'HR': { code: 'HR', label: 'Home Run', isHit: true, isAtBat: true, colorClass: 'bg-amber-500' },
+  'OUT': { code: 'OUT', label: 'Out', isHit: false, isAtBat: true, colorClass: 'bg-slate-500' },
+  'K': { code: 'K', label: 'Ponche', isHit: false, isAtBat: true, colorClass: 'bg-rose-500' },
+  'BB': { code: 'BB', label: 'Base por Bolas', isHit: false, isAtBat: false, colorClass: 'bg-blue-500' },
+  'HBP': { code: 'HBP', label: 'Golpeado', isHit: false, isAtBat: false, colorClass: 'bg-orange-500' },
+  'SF': { code: 'SF', label: 'Fly Sacrificio', isHit: false, isAtBat: false, colorClass: 'bg-indigo-500' },
+  'SAC': { code: 'SAC', label: 'Toque Sacrificio', isHit: false, isAtBat: false, colorClass: 'bg-violet-500' },
+  'CI': { code: 'CI', label: 'Interferencia', isHit: false, isAtBat: false, colorClass: 'bg-gray-500' },
+  'ROE': { code: 'ROE', label: 'Alcanzó por Error', isHit: false, isAtBat: true, colorClass: 'bg-amber-600' },
 };

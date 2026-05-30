@@ -1,6 +1,6 @@
 /* ============================================================
    QuickAddModal — Ultra-fast plate appearance registration
-   2-tap design: outcome grid → save
+   Grouped design: outcomes by type (Hits, Outs/Error, Others)
    ============================================================ */
 
 import React, { useState, useMemo } from 'react';
@@ -19,8 +19,6 @@ interface QuickAddModalProps {
   onCreateGame: (data: { tournamentId: string; opponent: string; date: string }) => Game;
 }
 
-const OUTCOME_GRID: OutcomeType[] = ['1B', '2B', '3B', 'HR', 'OUT', 'K', 'BB', 'HBP', 'SF', 'SAC'];
-
 const OUTCOME_BUTTON_STYLES: Record<string, string> = {
   '1B': 'bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-400 text-white shadow-emerald-600/30',
   '2B': 'bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-300 text-white shadow-emerald-500/30',
@@ -32,6 +30,8 @@ const OUTCOME_BUTTON_STYLES: Record<string, string> = {
   'HBP': 'bg-orange-600 hover:bg-orange-500 active:bg-orange-400 text-white shadow-orange-600/20',
   'SF': 'bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-400 text-white shadow-indigo-600/20',
   'SAC': 'bg-violet-600 hover:bg-violet-500 active:bg-violet-400 text-white shadow-violet-600/20',
+  'CI': 'bg-gray-600 hover:bg-gray-500 active:bg-gray-400 text-white shadow-gray-600/20',
+  'ROE': 'bg-amber-600 hover:bg-amber-500 active:bg-amber-400 text-white shadow-amber-600/20',
 };
 
 const QuickAddModal: React.FC<QuickAddModalProps> = ({
@@ -64,12 +64,16 @@ const QuickAddModal: React.FC<QuickAddModalProps> = ({
       setSelectedOutcome(null);
       setRbi(0);
       setScoredRun(false);
-      setSelectedGameId('');
+
+      const lastCreatedId = localStorage.getItem('bt_last_created_game_id');
+      const hasLastCreated = lastCreatedId && games.some(g => g.id === lastCreatedId);
+      setSelectedGameId(hasLastCreated ? lastCreatedId : (sortedGames[0]?.id || ''));
+
       setShowNewGame(games.length === 0);
       setNewOpponent('');
       setShowGamePicker(false);
     }
-  }, [isOpen, games.length]);
+  }, [isOpen, games, sortedGames]);
 
   const handleSave = () => {
     if (!selectedOutcome) return;
@@ -87,6 +91,9 @@ const QuickAddModal: React.FC<QuickAddModalProps> = ({
     }
 
     if (!gameId) return;
+
+    // Persist this game ID as the last used game
+    localStorage.setItem('bt_last_created_game_id', gameId);
 
     onAddPA({
       gameId,
@@ -157,6 +164,7 @@ const QuickAddModal: React.FC<QuickAddModalProps> = ({
                       key={g.id}
                       onClick={() => {
                         setSelectedGameId(g.id);
+                        localStorage.setItem('bt_last_created_game_id', g.id);
                         setShowGamePicker(false);
                       }}
                       className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
@@ -203,32 +211,95 @@ const QuickAddModal: React.FC<QuickAddModalProps> = ({
         </div>
 
         {/* Outcome grid */}
-        <div className="px-5 pb-3">
-          <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-2">
-            Resultado
-          </p>
-          <div className="grid grid-cols-5 gap-2">
-            {OUTCOME_GRID.map((code) => (
-              <button
-                key={code}
-                onClick={() => {
-                  setSelectedOutcome(code);
-                  // Auto-set run scored for HR
-                  if (code === 'HR') setScoredRun(true);
-                }}
-                className={`
-                  relative py-3 rounded-xl font-bold text-sm shadow-lg btn-press
-                  transition-all duration-150
-                  ${OUTCOME_BUTTON_STYLES[code]}
-                  ${selectedOutcome === code
-                    ? 'ring-2 ring-white/60 ring-offset-2 ring-offset-bg-secondary scale-105'
-                    : 'opacity-80 hover:opacity-100'
-                  }
-                `}
-              >
-                {code}
-              </button>
-            ))}
+        <div className="px-5 pb-3 space-y-4">
+          {/* Group 1: Hits */}
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2 flex items-center gap-1">
+              🔥 Hits (Batazos)
+            </p>
+            <div className="grid grid-cols-4 gap-2">
+              {(['1B', '2B', '3B', 'HR'] as OutcomeType[]).map((code) => (
+                <button
+                  key={code}
+                  onClick={() => {
+                    setSelectedOutcome(code);
+                    if (code === 'HR') setScoredRun(true);
+                  }}
+                  className={`
+                    relative py-3 rounded-xl font-black text-sm shadow-lg btn-press
+                    transition-all duration-150
+                    ${OUTCOME_BUTTON_STYLES[code]}
+                    ${selectedOutcome === code
+                      ? 'ring-2 ring-white/80 ring-offset-2 ring-offset-bg-secondary scale-105 z-10'
+                      : 'opacity-90 hover:opacity-100'
+                    }
+                  `}
+                >
+                  {code}
+                  <span className="block text-[9px] font-semibold opacity-85 mt-0.5">
+                    {OUTCOMES[code].label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Group 2: Outs y Error */}
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-rose-400 mb-2">
+              🛡️ Outs y Error en Campo
+            </p>
+            <div className="grid grid-cols-3 gap-2">
+              {(['OUT', 'K', 'ROE'] as OutcomeType[]).map((code) => (
+                <button
+                  key={code}
+                  onClick={() => setSelectedOutcome(code)}
+                  className={`
+                    relative py-2.5 rounded-xl font-bold text-sm shadow-md btn-press
+                    transition-all duration-150
+                    ${OUTCOME_BUTTON_STYLES[code]}
+                    ${selectedOutcome === code
+                      ? 'ring-2 ring-white/80 ring-offset-2 ring-offset-bg-secondary scale-105 z-10'
+                      : 'opacity-85 hover:opacity-100'
+                    }
+                  `}
+                >
+                  {code}
+                  <span className="block text-[9px] font-medium opacity-85 mt-0.5">
+                    {code === 'ROE' ? 'Error' : OUTCOMES[code].label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Group 3: Otros Avances */}
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-blue-400 mb-2">
+              📋 Otros Avances / Sacrificios
+            </p>
+            <div className="grid grid-cols-5 gap-1.5">
+              {(['BB', 'HBP', 'SF', 'SAC', 'CI'] as OutcomeType[]).map((code) => (
+                <button
+                  key={code}
+                  onClick={() => setSelectedOutcome(code)}
+                  className={`
+                    relative py-2 rounded-xl font-bold text-xs shadow-sm btn-press
+                    transition-all duration-150
+                    ${OUTCOME_BUTTON_STYLES[code]}
+                    ${selectedOutcome === code
+                      ? 'ring-2 ring-white/80 ring-offset-2 ring-offset-bg-secondary scale-105 z-10'
+                      : 'opacity-80 hover:opacity-100'
+                    }
+                  `}
+                >
+                  {code}
+                  <span className="block text-[8px] font-normal opacity-80 mt-0.5 truncate px-0.5">
+                    {code === 'CI' ? 'Interf.' : code === 'HBP' ? 'Golpe' : OUTCOMES[code].label.split(' ')[0]}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -237,7 +308,7 @@ const QuickAddModal: React.FC<QuickAddModalProps> = ({
           {/* RBI selector */}
           <div className="flex-1">
             <p className="text-xs font-semibold uppercase tracking-wider text-text-muted mb-2">
-              RBI
+              RBI (Carreras Empujadas)
             </p>
             <div className="flex gap-1.5">
               {[0, 1, 2, 3, 4].map((n) => (

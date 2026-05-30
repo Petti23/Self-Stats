@@ -10,7 +10,7 @@ interface EditPAModalProps {
   onSave: (id: string, data: Partial<Omit<PlateAppearance, 'id'>>) => void;
 }
 
-const OUTCOME_GRID: OutcomeType[] = ['1B','2B','3B','HR','OUT','K','BB','HBP','SF','SAC','CI'];
+const OUTCOME_GRID: OutcomeType[] = ['1B','2B','3B','HR','OUT','K','BB','HBP','SF','SAC','CI','ROE'];
 
 const EditPAModal: React.FC<EditPAModalProps> = ({ isOpen, pa, onClose, onSave }) => {
   const [outcome, setOutcome] = useState<OutcomeType>('OUT');

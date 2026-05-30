@@ -27,7 +27,7 @@ export function calculateStats(appearances: PlateAppearance[]): BattingStats {
   const counts: Record<OutcomeType, number> = {
     '1B': 0, '2B': 0, '3B': 0, 'HR': 0,
     'OUT': 0, 'K': 0, 'BB': 0, 'HBP': 0,
-    'SF': 0, 'SAC': 0, 'CI': 0,
+    'SF': 0, 'SAC': 0, 'CI': 0, 'ROE': 0,
   };
 
   let totalRbi = 0;
@@ -84,6 +84,7 @@ export function calculateStats(appearances: PlateAppearance[]): BattingStats {
     sac,
     ci,
     outs: counts['OUT'],
+    roe: counts['ROE'],
     rbi: totalRbi,
     runs: totalRuns,
     tb,

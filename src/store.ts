@@ -91,6 +91,7 @@ export function addGame(data: Omit<Game, 'id'>): Game {
   const all = getGames();
   all.push(game);
   write(STORAGE_KEYS.games, all);
+  localStorage.setItem('bt_last_created_game_id', game.id);
   return game;
 }
 

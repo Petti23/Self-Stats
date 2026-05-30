@@ -64,21 +64,28 @@ const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
       {/* Detailed breakdown */}
       <div className="glass-card p-4">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-text-secondary mb-3">
-          Desglose
+          Desglose de Turnos
         </h3>
         <div className="grid grid-cols-4 gap-y-3 gap-x-2">
           <StatPill label="PA" value={stats.pa} />
           <StatPill label="AB" value={stats.ab} />
           <StatPill label="H" value={stats.h} accent />
           <StatPill label="HR" value={stats.hr} gold />
+          
           <StatPill label="2B" value={stats.doubles} />
           <StatPill label="3B" value={stats.triples} />
-          <StatPill label="BB" value={stats.bb} />
-          <StatPill label="K" value={stats.k} danger />
           <StatPill label="RBI" value={stats.rbi} accent />
           <StatPill label="R" value={stats.runs} accent />
+          
+          <StatPill label="BB" value={stats.bb} />
           <StatPill label="HBP" value={stats.hbp} />
           <StatPill label="SF" value={stats.sf} />
+          <StatPill label="SAC" value={stats.sac} />
+
+          <StatPill label="K" value={stats.k} danger />
+          <StatPill label="ROE" value={stats.roe} warning />
+          <StatPill label="CI" value={stats.ci} />
+          <StatPill label="OUT" value={stats.outs} />
         </div>
       </div>
     </div>
@@ -110,13 +117,15 @@ interface StatPillProps {
   accent?: boolean;
   gold?: boolean;
   danger?: boolean;
+  warning?: boolean;
 }
 
-const StatPill: React.FC<StatPillProps> = ({ label, value, accent, gold, danger }) => {
+const StatPill: React.FC<StatPillProps> = ({ label, value, accent, gold, danger, warning }) => {
   let valueColor = 'text-text-primary';
   if (accent) valueColor = 'text-emerald-400';
   if (gold) valueColor = 'text-amber-400';
   if (danger && value > 0) valueColor = 'text-rose-400';
+  if (warning && value > 0) valueColor = 'text-amber-500';
 
   return (
     <div className="flex flex-col items-center">
